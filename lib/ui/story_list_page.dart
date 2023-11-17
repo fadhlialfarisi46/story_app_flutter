@@ -32,6 +32,28 @@ class StoryListPage extends StatefulWidget {
 }
 
 class _StoryListPageState extends State<StoryListPage> {
+  final ScrollController scrollController = ScrollController();
+
+  @override
+  void initState() {
+    super.initState();
+    final storyProvider = context.read<StoryProvider>();
+    scrollController.addListener(() {
+      if (scrollController.position.pixels >=
+          scrollController.position.maxScrollExtent) {
+        if (storyProvider.page != null) {
+          storyProvider.fetchStories();
+        }
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    scrollController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -76,12 +98,17 @@ class _StoryListPageState extends State<StoryListPage> {
           }
           if (state.state == ResultState.success) {
             return ListView.builder(
+              controller: scrollController,
               shrinkWrap: true,
               itemBuilder: (context, index) {
-                var story = state.result.listStory[index];
+                if (index == state.stories.length && state.page != null) {
+                  return _buildLoadingFooter();
+                }
+
+                var story = state.stories[index];
                 return _buildListStory(story: story);
               },
-              itemCount: state.result.listStory.length,
+              itemCount: state.stories.length + (state.page != null ? 1 : 0),
             );
           }
 
@@ -95,6 +122,15 @@ class _StoryListPageState extends State<StoryListPage> {
           widget.onClickAdd();
         },
         child: const Icon(Icons.add),
+      ),
+    );
+  }
+
+  Center _buildLoadingFooter() {
+    return const Center(
+      child: Padding(
+        padding: EdgeInsets.all(8),
+        child: CircularProgressIndicator(),
       ),
     );
   }
