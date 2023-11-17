@@ -20,7 +20,7 @@ class MapsProvider extends ChangeNotifier {
   final AuthPreference authPreference;
 
   MapsProvider({required this.apiService, required this.authPreference}) {
-    fetchStories();
+    // fetchStories();
   }
 
   late StoryResponse _storyResponse;

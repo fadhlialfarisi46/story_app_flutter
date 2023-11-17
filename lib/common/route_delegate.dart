@@ -12,6 +12,7 @@ import 'package:story_app_flutter/ui/add_story_page.dart';
 import 'package:story_app_flutter/ui/detail_story_page.dart';
 import 'package:story_app_flutter/ui/login_page.dart';
 import 'package:story_app_flutter/ui/maps_page.dart';
+import 'package:story_app_flutter/ui/pick_maps_page.dart';
 import 'package:story_app_flutter/ui/register_page.dart';
 import 'package:story_app_flutter/ui/story_list_page.dart';
 
@@ -43,6 +44,7 @@ class MyRouterDelegate extends RouterDelegate
   bool isRegister = false;
   bool isOpenAddPage = false;
   bool isOpenMapsPage = false;
+  bool isOpenPickMapsPage = false;
 
   @override
   Widget build(BuildContext context) {
@@ -64,8 +66,9 @@ class MyRouterDelegate extends RouterDelegate
 
         isRegister = false;
         selectedStory = null;
-        isOpenAddPage = false;
+        if (!isOpenPickMapsPage) isOpenAddPage = false;
         isOpenMapsPage = false;
+        isOpenPickMapsPage = false;
         notifyListeners();
 
         return true;
@@ -150,10 +153,16 @@ class MyRouterDelegate extends RouterDelegate
         if (isOpenAddPage)
           MaterialPage(
             key: const ValueKey("AddStoryPage"),
-            child: AddStoryPage(onBack: () {
-              isOpenAddPage = false;
-              notifyListeners();
-            }),
+            child: AddStoryPage(
+              onBack: () {
+                isOpenAddPage = false;
+                notifyListeners();
+              },
+              onPickMaps: () {
+                isOpenPickMapsPage = true;
+                notifyListeners();
+              },
+            ),
           ),
         if (isOpenMapsPage)
           MaterialPage(
@@ -162,6 +171,20 @@ class MyRouterDelegate extends RouterDelegate
               isOpenMapsPage = false;
               notifyListeners();
             }),
+          ),
+        if (isOpenPickMapsPage)
+          MaterialPage(
+            key: const ValueKey("PickMapsPage"),
+            child: PickMapsPage(
+              onBack: () {
+                isOpenAddPage = true;
+                isOpenPickMapsPage = false;
+                notifyListeners();
+              },
+              onLocationPicked: () {
+                isOpenAddPage = true;
+              },
+            ),
           ),
       ];
 }

@@ -11,6 +11,7 @@ import 'dart:ffi';
 import 'dart:io';
 
 import 'package:flutter/foundation.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:http/http.dart' as http;
 import 'package:story_app_flutter/data/response/detail_story_response.dart';
 import 'package:story_app_flutter/data/response/login_response.dart';
@@ -133,6 +134,7 @@ class ApiService {
     List<int> bytes,
     String fileName,
     String description,
+    LatLng? latLng,
   ) async {
     final uri = Uri.parse("$_baseUrl/stories");
     var request = http.MultipartRequest('POST', uri);
@@ -144,6 +146,8 @@ class ApiService {
     );
     final Map<String, String> fields = {
       "description": description,
+      "lat": latLng?.latitude.toString() ?? "0",
+      "lon": latLng?.longitude.toString() ?? "0",
     };
     final Map<String, String> headers = {
       "Content-type": "multipart/form-data",
@@ -165,7 +169,7 @@ class ApiService {
       );
       return noDataResponse;
     } else {
-      throw Exception("error upload story");
+      throw Exception("error upload story: $statusCode");
     }
   }
 }

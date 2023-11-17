@@ -10,6 +10,7 @@ import 'dart:typed_data';
 
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:image/image.dart' as img;
 import 'package:story_app_flutter/data/response/no_data_response.dart';
 
@@ -26,6 +27,10 @@ class AddStoryProvider extends ChangeNotifier {
   });
 
   String? imagePath;
+  String? location;
+  // double? lon;
+  // double? lat;
+  LatLng? latLng;
 
   XFile? imageFile;
 
@@ -37,6 +42,14 @@ class AddStoryProvider extends ChangeNotifier {
   void setImageFile(XFile? value) {
     imageFile = value;
     notifyListeners();
+  }
+
+  void setLocation(LatLng? latLng, String? location) {
+    if (latLng != null) {
+      this.latLng = latLng;
+      this.location = location;
+      notifyListeners();
+    }
   }
 
   Future<List<int>> compressImage(List<int> bytes) async {
@@ -51,7 +64,6 @@ class AddStoryProvider extends ChangeNotifier {
     List<int> newByte = [];
 
     do {
-      ///
       compressQuality -= 10;
 
       newByte = img.encodeJpg(
@@ -101,8 +113,10 @@ class AddStoryProvider extends ChangeNotifier {
   String message = "";
   NoDataResponse? noDataResponse;
 
-  Future<void> setUploadLoading() async {
+  Future<void> setLoading() async {
+    print("addstory: loading called");
     isUploading = true;
+    notifyListeners();
   }
 
   Future<void> upload(
@@ -113,15 +127,17 @@ class AddStoryProvider extends ChangeNotifier {
     try {
       message = "";
       noDataResponse = null;
-      isUploading = true;
+      // isUploading = true;
       notifyListeners();
 
       final user = await authPreference.getUser();
       final token = user?.token ?? "";
-      noDataResponse =
-          await apiService.uploadStory(token, bytes, fileName, description);
+      noDataResponse = await apiService.uploadStory(
+          token, bytes, fileName, description, latLng);
       message = noDataResponse?.message ?? "success";
       isUploading = false;
+      latLng = null;
+      location = null;
       notifyListeners();
     } catch (e) {
       isUploading = false;

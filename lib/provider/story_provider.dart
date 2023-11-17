@@ -20,7 +20,7 @@ class StoryProvider extends ChangeNotifier {
   final AuthPreference authPreference;
 
   StoryProvider({required this.apiService, required this.authPreference}) {
-    fetchStories();
+    // fetchStories();
   }
 
   int? page = 1;
@@ -34,6 +34,12 @@ class StoryProvider extends ChangeNotifier {
 
   String _message = '';
   String get message => _message;
+
+  Future<void> resetStory() async {
+    page = 1;
+    stories = [];
+    notifyListeners();
+  }
 
   Future<void> fetchStories() async {
     try {

@@ -38,6 +38,7 @@ class _StoryListPageState extends State<StoryListPage> {
   void initState() {
     super.initState();
     final storyProvider = context.read<StoryProvider>();
+    Future.microtask(() async => await storyProvider.fetchStories());
     scrollController.addListener(() {
       if (scrollController.position.pixels >=
           scrollController.position.maxScrollExtent) {

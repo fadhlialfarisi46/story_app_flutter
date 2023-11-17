@@ -40,25 +40,8 @@ class _MapsPageState extends State<MapsPage> {
   @override
   void initState() {
     super.initState();
-
-    // final marker = Marker(
-    //   markerId: const MarkerId("dicoding"),
-    //   position: dicodingOffice,
-    //   onTap: () {
-    //     mapController.animateCamera(
-    //       CameraUpdate.newLatLngZoom(dicodingOffice, 18),
-    //     );
-    //   },
-    // );
-    // markers.add(marker);
-    //
-    // addManyMarker();
-  }
-
-  @override
-  void setState(VoidCallback fn) {
-    // TODO: implement setState
-    super.setState(fn);
+    Future.microtask(
+        () async => await context.read<MapsProvider>().fetchStories());
   }
 
   @override

@@ -17,8 +17,10 @@ import 'package:story_app_flutter/provider/story_provider.dart';
 
 class AddStoryPage extends StatefulWidget {
   final Function onBack;
+  final Function onPickMaps;
 
-  const AddStoryPage({super.key, required this.onBack});
+  const AddStoryPage(
+      {super.key, required this.onBack, required this.onPickMaps});
 
   @override
   State<AddStoryPage> createState() => _AddStoryPageState();
@@ -116,10 +118,14 @@ class _AddStoryPageState extends State<AddStoryPage> {
                           maxLines: 5,
                         ),
                         const SizedBox(
+                          height: 16,
+                        ),
+                        _buildMapsPicker(),
+                        const SizedBox(
                           height: 32,
                         ),
-                        context.read<AddStoryProvider>().isUploading
-                            ? const Center(child: CircularProgressIndicator())
+                        context.watch<AddStoryProvider>().isUploading
+                            ? const CircularProgressIndicator()
                             : ElevatedButton(
                                 onPressed: () {
                                   final scaffoldMessenger =
@@ -168,6 +174,27 @@ class _AddStoryPageState extends State<AddStoryPage> {
     );
   }
 
+  Column _buildMapsPicker() {
+    return Column(
+      children: [
+        context.watch<AddStoryProvider>().latLng == null
+            ? const SizedBox(
+                height: 4,
+              )
+            : _showLocation(),
+        ElevatedButton(
+          onPressed: () {
+            widget.onPickMaps();
+          },
+          style: ElevatedButton.styleFrom(
+              minimumSize: const Size.fromHeight(48),
+              backgroundColor: Colors.blue),
+          child: const Text("Pick Location"),
+        ),
+      ],
+    );
+  }
+
   Container _buildPlaceholderImage(BuildContext context) {
     return Container(
       width: MediaQuery.of(context).size.width,
@@ -181,21 +208,24 @@ class _AddStoryPageState extends State<AddStoryPage> {
   }
 
   _onUpload() async {
+    print("addstory: onupload called");
     final ScaffoldMessengerState scaffoldMessengerState =
         ScaffoldMessenger.of(context);
-    final addStoryProvider = context.read<AddStoryProvider>();
-    await addStoryProvider.setUploadLoading();
-
     final storyProvider = context.read<StoryProvider>();
+    final addStoryProvider = context.read<AddStoryProvider>();
 
     final imagePath = addStoryProvider.imagePath;
     final imageFile = addStoryProvider.imageFile;
     if (imagePath == null || imageFile == null) return;
 
+    await addStoryProvider.setLoading();
+
     final fileName = imageFile.name;
     final bytes = await imageFile.readAsBytes();
+    print("addstory: after bytes");
 
     final newBytes = await addStoryProvider.compressImage(bytes);
+    print("addstory: after newBytes");
 
     await addStoryProvider.upload(
       newBytes,
@@ -203,20 +233,22 @@ class _AddStoryPageState extends State<AddStoryPage> {
       fileName,
       descriptionController.text,
     );
+    print("addstory: after upload");
 
-    if (addStoryProvider.noDataResponse != null) {
+    if (addStoryProvider.noDataResponse != null &&
+        addStoryProvider.noDataResponse?.error == false) {
       addStoryProvider.setImageFile(null);
       addStoryProvider.setImagePath(null);
+      addStoryProvider.setLocation(null, null);
+
+      storyProvider.resetStory();
+      storyProvider.fetchStories();
+      widget.onBack();
     }
 
-    widget.onBack();
     scaffoldMessengerState.showSnackBar(
       SnackBar(content: Text(addStoryProvider.message)),
     );
-
-    if (addStoryProvider.noDataResponse?.error == false) {
-      storyProvider.fetchStories();
-    }
   }
 
   _onGalleryView() async {
@@ -260,6 +292,26 @@ class _AddStoryPageState extends State<AddStoryPage> {
     return Image.file(
       File(imagePath.toString()),
       fit: BoxFit.contain,
+      height: 200,
+    );
+  }
+
+  Widget _showLocation() {
+    final location = context.read<AddStoryProvider>().location ?? "";
+
+    return Column(
+      children: [
+        const Text(
+          "Your location:",
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
+        Text(
+          location,
+        ),
+        const SizedBox(
+          height: 8,
+        ),
+      ],
     );
   }
 }

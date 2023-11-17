@@ -6,6 +6,7 @@
  *
  */
 import 'package:flutter/material.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:story_app_flutter/data/preference/auth_preference.dart';
 
@@ -14,17 +15,28 @@ import '../data/api_service/api_service.dart';
 import '../data/model/story.dart';
 import '../provider/detail_story_provider.dart';
 
-class DetailStoryPage extends StatelessWidget {
+class DetailStoryPage extends StatefulWidget {
   final String id;
   final Function() onBack;
 
   const DetailStoryPage({super.key, required this.id, required this.onBack});
 
   @override
+  State<DetailStoryPage> createState() => _DetailStoryPageState();
+}
+
+class _DetailStoryPageState extends State<DetailStoryPage> {
+  late GoogleMapController mapController;
+
+  final Set<Marker> markers = {};
+
+  @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider<DetailStoryProvider>(
       create: (_) => DetailStoryProvider(
-          apiService: ApiService(), id: id, authPreference: AuthPreference()),
+          apiService: ApiService(),
+          id: widget.id,
+          authPreference: AuthPreference()),
       child: Scaffold(
         body: SafeArea(
           child: Consumer<DetailStoryProvider>(builder: (context, state, _) {
@@ -32,7 +44,20 @@ class DetailStoryPage extends StatelessWidget {
               return const Center(child: CircularProgressIndicator());
             }
             if (state.state == ResultState.success) {
-              return _buildDetailBody(context, state.result.story);
+              final story = state.result.story;
+              print(story.lat.toString());
+              if (story.lat != null && story.lat != null) {
+                final marker = Marker(
+                  markerId: const MarkerId("detail"),
+                  position: LatLng(story.lat!, story.lon!),
+                  infoWindow: InfoWindow(
+                    title: "${story.lat} ${story.lon}",
+                  ),
+                );
+                markers.add(marker);
+              }
+
+              return _buildDetailBody(context, story);
             }
 
             return Center(
@@ -73,6 +98,28 @@ class DetailStoryPage extends StatelessWidget {
                   story.description,
                   style: Theme.of(context).textTheme.bodyLarge,
                 ),
+                if (story.lat != null && story.lon != null)
+                  Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: SizedBox(
+                      height: 200,
+                      child: GoogleMap(
+                        markers: markers,
+                        initialCameraPosition: CameraPosition(
+                          target: LatLng(story.lat!, story.lon!),
+                          zoom: 18,
+                        ),
+                        onMapCreated: (controller) {
+                          setState(() {
+                            mapController = controller;
+                          });
+                        },
+                        myLocationButtonEnabled: false,
+                        zoomControlsEnabled: false,
+                        mapToolbarEnabled: false,
+                      ),
+                    ),
+                  ),
               ],
             ),
           ),
@@ -103,7 +150,7 @@ class DetailStoryPage extends StatelessWidget {
             backgroundColor: Colors.grey.withOpacity(0.8),
             child: IconButton(
                 onPressed: () {
-                  onBack();
+                  widget.onBack();
                 },
                 icon: const Icon(
                   Icons.arrow_back,

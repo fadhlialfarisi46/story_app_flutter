@@ -31,8 +31,8 @@ class Story {
         description: json["description"],
         photoUrl: json["photoUrl"],
         createdAt: DateTime.parse(json["createdAt"]),
-        lat: json["lat"]?.toDouble() ?? 0,
-        lon: json["lon"]?.toDouble() ?? 0,
+        lat: json["lat"],
+        lon: json["lon"],
       );
 
   Map<String, dynamic> toJson() => {
