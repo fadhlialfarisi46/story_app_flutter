@@ -22,6 +22,8 @@ class StoryProvider extends ChangeNotifier {
     fetchStories();
   }
 
+  int? page = 1;
+
   late StoryResponse _storyResponse;
   StoryResponse get result => _storyResponse;
 

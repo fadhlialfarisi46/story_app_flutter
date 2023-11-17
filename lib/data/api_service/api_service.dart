@@ -58,9 +58,13 @@ class ApiService {
     return NoDataResponse.fromMap(json.decode(response.body));
   }
 
-  Future<StoryResponse> getStories(String token) async {
+  Future<StoryResponse> getStories(String token,
+      {int page = 1, int location = 0}) async {
     final response = await http.get(
-      Uri.parse('$_baseUrl/stories'),
+      Uri.parse('$_baseUrl/stories').replace(queryParameters: {
+        'page': page.toString(),
+        'location': location.toString(),
+      }),
       headers: {
         HttpHeaders.authorizationHeader: 'Bearer $token',
       },

@@ -16,6 +16,7 @@ import '../provider/auth_provider.dart';
 class StoryListPage extends StatefulWidget {
   final Function(String) onTapped;
   final Function() onLogout;
+  final Function() onMaps;
   final Function() onClickAdd;
 
   const StoryListPage({
@@ -23,6 +24,7 @@ class StoryListPage extends StatefulWidget {
     required this.onTapped,
     required this.onLogout,
     required this.onClickAdd,
+    required this.onMaps,
   });
 
   @override
@@ -41,6 +43,16 @@ class _StoryListPageState extends State<StoryListPage> {
         backgroundColor: Colors.transparent,
         elevation: 0,
         actions: [
+          IconButton(
+            icon: const Icon(
+              Icons.place_outlined,
+              color: Colors.blue,
+            ),
+            tooltip: 'Maps',
+            onPressed: () async {
+              widget.onMaps();
+            },
+          ),
           IconButton(
             icon: const Icon(
               Icons.logout,
