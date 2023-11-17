@@ -11,6 +11,7 @@ import 'package:story_app_flutter/data/preference/auth_preference.dart';
 import 'package:story_app_flutter/ui/add_story_page.dart';
 import 'package:story_app_flutter/ui/detail_story_page.dart';
 import 'package:story_app_flutter/ui/login_page.dart';
+import 'package:story_app_flutter/ui/maps_page.dart';
 import 'package:story_app_flutter/ui/register_page.dart';
 import 'package:story_app_flutter/ui/story_list_page.dart';
 
@@ -41,6 +42,7 @@ class MyRouterDelegate extends RouterDelegate
   bool? isLoggedIn;
   bool isRegister = false;
   bool isOpenAddPage = false;
+  bool isOpenMapsPage = false;
 
   @override
   Widget build(BuildContext context) {
@@ -63,6 +65,7 @@ class MyRouterDelegate extends RouterDelegate
         isRegister = false;
         selectedStory = null;
         isOpenAddPage = false;
+        isOpenMapsPage = false;
         notifyListeners();
 
         return true;
@@ -128,6 +131,10 @@ class MyRouterDelegate extends RouterDelegate
               isLoggedIn = false;
               notifyListeners();
             },
+            onMaps: () {
+              isOpenMapsPage = true;
+              notifyListeners();
+            },
           ),
         ),
         if (selectedStory != null)
@@ -147,6 +154,14 @@ class MyRouterDelegate extends RouterDelegate
               isOpenAddPage = false;
               notifyListeners();
             }),
-          )
+          ),
+        if (isOpenMapsPage)
+          MaterialPage(
+            key: const ValueKey("MapsPage"),
+            child: MapsPage(onBack: () {
+              isOpenMapsPage = false;
+              notifyListeners();
+            }),
+          ),
       ];
 }

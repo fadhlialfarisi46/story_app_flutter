@@ -5,6 +5,7 @@ import 'package:story_app_flutter/data/api_service/api_service.dart';
 import 'package:story_app_flutter/data/preference/auth_preference.dart';
 import 'package:story_app_flutter/provider/add_story_provider.dart';
 import 'package:story_app_flutter/provider/auth_provider.dart';
+import 'package:story_app_flutter/provider/maps_provider.dart';
 import 'package:story_app_flutter/provider/story_provider.dart';
 
 void main() {
@@ -23,6 +24,7 @@ class _MyAppState extends State<MyApp> {
   late AuthProvider authProvider;
   late AddStoryProvider addStoryProvider;
   late StoryProvider storyProvider;
+  late MapsProvider mapsProvider;
 
   @override
   void initState() {
@@ -34,6 +36,8 @@ class _MyAppState extends State<MyApp> {
     authProvider = AuthProvider(authPreference, apiService);
     storyProvider =
         StoryProvider(apiService: apiService, authPreference: authPreference);
+    mapsProvider =
+        MapsProvider(apiService: apiService, authPreference: authPreference);
     addStoryProvider = AddStoryProvider(
         apiService: apiService, authPreference: authPreference);
     myRouterDelegate = MyRouterDelegate(authPreference);
@@ -44,6 +48,7 @@ class _MyAppState extends State<MyApp> {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (context) => storyProvider),
+        ChangeNotifierProvider(create: (context) => mapsProvider),
         ChangeNotifierProvider(create: (context) => authProvider),
         ChangeNotifierProvider(create: (context) => addStoryProvider),
       ],
