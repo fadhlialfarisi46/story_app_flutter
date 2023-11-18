@@ -8,6 +8,11 @@
 
 import 'dart:convert';
 
+import 'package:json_annotation/json_annotation.dart';
+
+part 'user.g.dart';
+
+@JsonSerializable()
 class User {
   String userId;
   String name;
@@ -19,17 +24,8 @@ class User {
     required this.token,
   });
 
-  factory User.fromJson(Map<String, dynamic> json) => User(
-        userId: json["userId"],
-        name: json["name"],
-        token: json["token"],
-      );
-
-  Map<String, dynamic> toJson() => {
-        "userId": userId,
-        "name": name,
-        "token": token,
-      };
+  factory User.fromJson(Map<String, dynamic> json) => _$UserFromJson(json);
+  Map<String, dynamic> toJson() => _$UserToJson(this);
 
   String toJsonFromPreference() => json.encode(toJson());
 

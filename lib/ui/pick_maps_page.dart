@@ -148,7 +148,6 @@ class _PickMapsPageState extends State<PickMapsPage> {
     if (!serviceEnabled) {
       serviceEnabled = await location.requestService();
       if (!serviceEnabled) {
-        print("Location services is not available");
         return;
       }
     }
@@ -157,7 +156,6 @@ class _PickMapsPageState extends State<PickMapsPage> {
     if (permissionGranted == PermissionStatus.denied) {
       permissionGranted = await location.requestPermission();
       if (permissionGranted != PermissionStatus.granted) {
-        print("Location permission is denied");
         return;
       }
     }

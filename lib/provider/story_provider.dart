@@ -19,9 +19,7 @@ class StoryProvider extends ChangeNotifier {
   final ApiService apiService;
   final AuthPreference authPreference;
 
-  StoryProvider({required this.apiService, required this.authPreference}) {
-    // fetchStories();
-  }
+  StoryProvider({required this.apiService, required this.authPreference}) {}
 
   int? page = 1;
   List<Story> stories = [];

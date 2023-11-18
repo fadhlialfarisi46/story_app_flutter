@@ -56,7 +56,7 @@ class ApiService {
       print('response: ${response.body}');
     }
 
-    return NoDataResponse.fromMap(json.decode(response.body));
+    return NoDataResponse.fromJson(json.decode(response.body));
   }
 
   Future<StoryResponse> getStories(String token,
@@ -165,7 +165,7 @@ class ApiService {
     final String responseData = String.fromCharCodes(responseList);
     if (statusCode == 201) {
       final NoDataResponse noDataResponse = NoDataResponse.fromJson(
-        responseData,
+        json.decode(responseData),
       );
       return noDataResponse;
     } else {

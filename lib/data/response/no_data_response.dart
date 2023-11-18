@@ -8,6 +8,11 @@
 
 import 'dart:convert';
 
+import 'package:json_annotation/json_annotation.dart';
+
+part 'no_data_response.g.dart';
+
+@JsonSerializable()
 class NoDataResponse {
   bool error;
   String message;
@@ -17,18 +22,8 @@ class NoDataResponse {
     required this.message,
   });
 
-  factory NoDataResponse.fromMap(Map<String, dynamic> map) {
-    return NoDataResponse(
-      error: map['error'] ?? false,
-      message: map['message'] ?? '',
-    );
-  }
+  factory NoDataResponse.fromJson(Map<String, dynamic> json) =>
+      _$NoDataResponseFromJson(json);
 
-  factory NoDataResponse.fromJson(String source) =>
-      NoDataResponse.fromMap(json.decode(source));
-
-  Map<String, dynamic> toJson() => {
-        "error": error,
-        "message": message,
-      };
+  Map<String, dynamic> toJson() => _$NoDataResponseToJson(this);
 }

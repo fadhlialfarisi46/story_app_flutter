@@ -28,8 +28,6 @@ class AddStoryProvider extends ChangeNotifier {
 
   String? imagePath;
   String? location;
-  // double? lon;
-  // double? lat;
   LatLng? latLng;
 
   XFile? imageFile;
@@ -91,7 +89,6 @@ class AddStoryProvider extends ChangeNotifier {
     List<int> newByte = bytes;
 
     do {
-      ///
       compressTall -= 0.1;
 
       final newImage = img.copyResize(
@@ -114,7 +111,6 @@ class AddStoryProvider extends ChangeNotifier {
   NoDataResponse? noDataResponse;
 
   Future<void> setLoading() async {
-    print("addstory: loading called");
     isUploading = true;
     notifyListeners();
   }
@@ -127,7 +123,6 @@ class AddStoryProvider extends ChangeNotifier {
     try {
       message = "";
       noDataResponse = null;
-      // isUploading = true;
       notifyListeners();
 
       final user = await authPreference.getUser();

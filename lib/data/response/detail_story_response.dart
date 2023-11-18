@@ -6,8 +6,13 @@
  *
  */
 
+import 'package:json_annotation/json_annotation.dart';
+
 import '../model/story.dart';
 
+part 'detail_story_response.g.dart';
+
+@JsonSerializable()
 class DetailStoryResponse {
   bool error;
   String message;
@@ -20,15 +25,7 @@ class DetailStoryResponse {
   });
 
   factory DetailStoryResponse.fromJson(Map<String, dynamic> json) =>
-      DetailStoryResponse(
-        error: json["error"],
-        message: json["message"],
-        story: Story.fromJson(json["story"]),
-      );
+      _$DetailStoryResponseFromJson(json);
 
-  Map<String, dynamic> toJson() => {
-        "error": error,
-        "message": message,
-        "story": story.toJson(),
-      };
+  Map<String, dynamic> toJson() => _$DetailStoryResponseToJson(this);
 }

@@ -17,10 +17,10 @@ class LoginPage extends StatefulWidget {
   final Function() onRegister;
 
   const LoginPage({
-    Key? key,
+    super.key,
     required this.onLogin,
     required this.onRegister,
-  }) : super(key: key);
+  });
 
   @override
   State<LoginPage> createState() => _LoginPageState();

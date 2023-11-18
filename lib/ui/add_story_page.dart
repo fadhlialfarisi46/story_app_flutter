@@ -208,7 +208,6 @@ class _AddStoryPageState extends State<AddStoryPage> {
   }
 
   _onUpload() async {
-    print("addstory: onupload called");
     final ScaffoldMessengerState scaffoldMessengerState =
         ScaffoldMessenger.of(context);
     final storyProvider = context.read<StoryProvider>();
@@ -222,18 +221,14 @@ class _AddStoryPageState extends State<AddStoryPage> {
 
     final fileName = imageFile.name;
     final bytes = await imageFile.readAsBytes();
-    print("addstory: after bytes");
 
     final newBytes = await addStoryProvider.compressImage(bytes);
-    print("addstory: after newBytes");
 
     await addStoryProvider.upload(
       newBytes,
-      // bytes,
       fileName,
       descriptionController.text,
     );
-    print("addstory: after upload");
 
     if (addStoryProvider.noDataResponse != null &&
         addStoryProvider.noDataResponse?.error == false) {
