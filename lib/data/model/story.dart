@@ -6,31 +6,32 @@
  *
  */
 
-import 'package:json_annotation/json_annotation.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'story.g.dart';
+part 'story.freezed.dart';
 
-@JsonSerializable()
-class Story {
-  String id;
-  String name;
-  String description;
-  String photoUrl;
-  DateTime createdAt;
-  double? lat;
-  double? lon;
+@freezed
+class Story with _$Story {
+  // String id;
+  // String name;
+  // String description;
+  // String photoUrl;
+  // DateTime createdAt;
+  // double? lat;
+  // double? lon;
 
-  Story({
-    required this.id,
-    required this.name,
-    required this.description,
-    required this.photoUrl,
-    required this.createdAt,
-    required this.lat,
-    required this.lon,
-  });
+  const factory Story({
+    required String id,
+    required String name,
+    required String description,
+    required String photoUrl,
+    required DateTime createdAt,
+    required double? lat,
+    required double? lon,
+  }) = _Story;
 
   factory Story.fromJson(Map<String, dynamic> json) => _$StoryFromJson(json);
 
-  Map<String, dynamic> toJson() => _$StoryToJson(this);
+  // Map<String, dynamic> toJson() => _$StoryToJson(this);
 }

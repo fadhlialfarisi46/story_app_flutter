@@ -38,7 +38,6 @@ class _StoryListPageState extends State<StoryListPage> {
   void initState() {
     super.initState();
     final storyProvider = context.read<StoryProvider>();
-    Future.microtask(() async => await storyProvider.fetchStories());
     scrollController.addListener(() {
       if (scrollController.position.pixels >=
           scrollController.position.maxScrollExtent) {
@@ -47,6 +46,8 @@ class _StoryListPageState extends State<StoryListPage> {
         }
       }
     });
+
+    Future.microtask(() async => await storyProvider.fetchStories());
   }
 
   @override
@@ -144,7 +145,7 @@ class _StoryListPageState extends State<StoryListPage> {
       child: Padding(
         padding: const EdgeInsets.all(8.0),
         child: SizedBox(
-          height: 250,
+          height: 260,
           child: Card(
             child: IntrinsicHeight(
               child: Column(
