@@ -14,6 +14,7 @@ import '../common/state_management.dart';
 import '../data/api_service/api_service.dart';
 import '../data/model/story.dart';
 import '../provider/detail_story_provider.dart';
+import 'package:geocoding/geocoding.dart' as geo;
 
 class DetailStoryPage extends StatefulWidget {
   final String id;
@@ -45,17 +46,17 @@ class _DetailStoryPageState extends State<DetailStoryPage> {
             }
             if (state.state == ResultState.success) {
               final story = state.result.story;
-              print(story.lat.toString());
-              if (story.lat != null && story.lat != null) {
-                final marker = Marker(
-                  markerId: const MarkerId("detail"),
-                  position: LatLng(story.lat!, story.lon!),
-                  infoWindow: InfoWindow(
-                    title: "${story.lat} ${story.lon}",
-                  ),
-                );
-                markers.add(marker);
-              }
+              // print(story.lat.toString());
+              // if (story.lat != null && story.lat != null) {
+              //   final marker = Marker(
+              //     markerId: const MarkerId("detail"),
+              //     position: LatLng(story.lat!, story.lon!),
+              //     infoWindow: InfoWindow(
+              //       title: "${story.lat} ${story.lon}",
+              //     ),
+              //   );
+              //   markers.add(marker);
+              // }
 
               return _buildDetailBody(context, story);
             }
@@ -109,7 +110,18 @@ class _DetailStoryPageState extends State<DetailStoryPage> {
                           target: LatLng(story.lat!, story.lon!),
                           zoom: 18,
                         ),
-                        onMapCreated: (controller) {
+                        onMapCreated: (controller) async {
+                          final info = await geo.placemarkFromCoordinates(
+                              story.lat!, story.lon!);
+
+                          final place = info[0];
+                          final street = place.street!;
+                          final address =
+                              '${place.subLocality}, ${place.locality}, ${place.postalCode}, ${place.country}';
+
+                          defineMarker(
+                              LatLng(story.lat!, story.lon!), street, address);
+
                           setState(() {
                             mapController = controller;
                           });
@@ -160,5 +172,20 @@ class _DetailStoryPageState extends State<DetailStoryPage> {
         ),
       ],
     );
+  }
+
+  void defineMarker(LatLng latLng, String street, String address) {
+    final marker = Marker(
+      markerId: const MarkerId("source"),
+      position: latLng,
+      infoWindow: InfoWindow(
+        title: street,
+        snippet: address,
+      ),
+    );
+    setState(() {
+      markers.clear();
+      markers.add(marker);
+    });
   }
 }

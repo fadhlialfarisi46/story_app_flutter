@@ -156,20 +156,12 @@ class _MapsPageState extends State<MapsPage> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  const Text(
-                    "Detail Story",
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24),
-                  ),
-                  IconButton(
-                    icon: const Icon(Icons.close),
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
-                  ),
-                ],
+              const Text(
+                "Detail Story",
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24),
+              ),
+              const SizedBox(
+                height: 16,
               ),
               Expanded(child: _buildDetailBody(story)),
             ],
